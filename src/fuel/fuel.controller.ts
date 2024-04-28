@@ -3,6 +3,7 @@ import {
   Controller,
   DefaultValuePipe,
   Get,
+  Param,
   ParseIntPipe,
   Post,
   Query,
@@ -19,11 +20,15 @@ export class FuelController {
     return this.fuelService.create(createFuelDto);
   }
 
-  @Get()
+  @Get(':state?/:city?')
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
+    @Param('state') state: string = '',
+    @Param('city') city: string = '',
   ): Promise<Fuel[]> {
-    return this.fuelService.findAll(page, limit);
+    const formattedCity = city.toUpperCase();
+    const formattedState = state.toUpperCase();
+    return this.fuelService.findAll(page, limit, formattedCity, formattedState);
   }
 }

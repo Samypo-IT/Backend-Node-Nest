@@ -12,8 +12,21 @@ export class FuelService {
     return createdFuel.save();
   }
 
-  async findAll(page = 1, limit = 20): Promise<Fuel[]> {
+  async findAll(
+    page = 1,
+    limit = 20,
+    city = null,
+    state = null,
+  ): Promise<Fuel[]> {
     const skip = (page - 1) * limit;
-    return this.fuelModel.find().skip(skip).limit(limit).exec();
+    const query = {};
+
+    if (state) {
+      query['state_abbr'] = state;
+    }
+    if (city) {
+      query['city'] = city;
+    }
+    return this.fuelModel.find(query).skip(skip).limit(limit).exec();
   }
 }
