@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RankingModule } from './ranking/ranking.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { FuelModule } from './fuel/fuel.module';
+import { StationModule } from './station/station.module';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { FuelModule } from './fuel/fuel.module';
         serverApi: { version: '1', strict: true, deprecationErrors: true },
       },
     ),
-    FuelModule,
+    StationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

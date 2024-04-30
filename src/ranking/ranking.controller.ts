@@ -1,7 +1,9 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { RankingService } from './ranking.service';
 import { findMinMaxDates } from '../utils';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Ranking')
 @Controller('ranking')
 export class RankingController {
   constructor(private rankingService: RankingService) {}
