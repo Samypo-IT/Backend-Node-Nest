@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { RANKING } from './ranking.mock';
 import { errorReturn } from '../utils';
-import { Fuel } from '../schemas/fuel.schema';
+import { Station } from '../schemas/station.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -9,7 +9,7 @@ import { Model } from 'mongoose';
 export class RankingService {
   ranking = RANKING;
 
-  constructor(@InjectModel(Fuel.name) private fuelModel: Model<Fuel>) {}
+  constructor(@InjectModel(Station.name) private fuelModel: Model<Station>) {}
 
   async findByDateCity(
     minDate: string,
@@ -181,7 +181,7 @@ export class RankingService {
     });
   }
 
-  async getRankingMonth(city: string, state: string): Promise<Fuel[]> {
+  async getRankingMonth(city: string, state: string): Promise<Station[]> {
     if (!city || !state) {
       return errorReturn();
     }

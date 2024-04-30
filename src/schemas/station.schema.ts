@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-export type FuelDocument = HydratedDocument<Fuel>;
+export type StationDocument = HydratedDocument<Station>;
 
 @Schema()
-export class Fuel {
+export class Station {
   @Prop()
   product: string;
 
@@ -57,7 +57,7 @@ export class Fuel {
   __v: number;
 }
 
-export const FuelSchema = SchemaFactory.createForClass(Fuel).index(
+export const StationSchema = SchemaFactory.createForClass(Station).index(
   { reseller_cnpj: 1, collection_date: 1, product: 1 },
   { unique: true },
 );
