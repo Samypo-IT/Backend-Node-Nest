@@ -35,6 +35,30 @@ export class StationController {
   ): Promise<Station[]> {
     const formattedCity = city.toUpperCase();
     const formattedState = state.toUpperCase();
-    return this.stationService.findAll(page, limit, formattedCity, formattedState);
+    return this.stationService.findAll(
+      page,
+      limit,
+      formattedCity,
+      formattedState,
+    );
+  }
+
+  @Get(':state?/:city?/last')
+  async findLast(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
+    @Param('state') state: string = '',
+    @Param('city') city: string = '',
+    @Param('products') products: string[] = [],
+  ): Promise<Station[]> {
+    const formattedCity = city.toUpperCase();
+    const formattedState = state.toUpperCase();
+    return this.stationService.findLast(
+      page,
+      limit,
+      formattedCity,
+      formattedState,
+      products,
+    );
   }
 }
