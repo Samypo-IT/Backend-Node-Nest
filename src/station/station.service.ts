@@ -5,7 +5,9 @@ import { Station, StationDocument } from '../schemas/station.schema';
 
 @Injectable()
 export class StationService {
-  constructor(@InjectModel(Station.name) private stationModel: Model<StationDocument>) {}
+  constructor(
+    @InjectModel(Station.name) private stationModel: Model<StationDocument>,
+  ) {}
 
   async create(createStationDto: Partial<Station>): Promise<Station> {
     const createdStation = new this.stationModel(createStationDto);
@@ -28,5 +30,73 @@ export class StationService {
       query['city'] = city;
     }
     return this.stationModel.find(query).skip(skip).limit(limit).exec();
+  }
+
+  async findLast(
+    page = 1,
+    limit = 20,
+    city = null,
+    state = null,
+    products: string[] = [],
+  ): Promise<Station[]> {
+    const skip = (page - 1) * limit;
+    const matchQuery: any = {};
+
+    if (state !== null) {
+      matchQuery.state_abbr = state;
+    }
+    if (city !== null) {
+      matchQuery.city = city;
+    }
+    if (products.length > 0) {
+      matchQuery.product = { $in: products };
+    }
+
+    return this.stationModel
+      .aggregate([
+        {
+          $match: matchQuery,
+        },
+        {
+          $group: {
+            _id: '$product',
+            last_collection_date: { $max: '$collection_date' },
+          },
+        },
+        {
+          $lookup: {
+            from: 'stations',
+            let: {
+              product: '$_id',
+              last_date: '$last_collection_date',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$product', '$$product'] },
+                      { $eq: ['$collection_date', '$$last_date'] },
+                      { $eq: ['$city', city] },
+                      { $eq: ['$state_abbr', state] },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: 'latest_records',
+          },
+        },
+        {
+          $unwind: '$latest_records',
+        },
+        {
+          $replaceRoot: { newRoot: '$latest_records' },
+        },
+        { $sort: { sale_value: 1 } },
+        { $skip: skip },
+        { $limit: limit },
+      ])
+      .exec();
   }
 }
