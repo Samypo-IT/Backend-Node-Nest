@@ -9,8 +9,8 @@ import { StationModule } from './station/station.module';
   imports: [
     RankingModule,
     MongooseModule.forRoot(
-      // 'mongodb+srv://i6r1WJw2IDAMcdtZ1D2aHk:f5r71ivyel3frw7McO9tygKxp38UB5Wh@samypo.bqlnpeh.mongodb.net/samypo',
-      'mongodb://localhost:27017/samypo',
+      'mongodb+srv://i6r1WJw2IDAMcdtZ1D2aHk:f5r71ivyel3frw7McO9tygKxp38UB5Wh@samypo.bqlnpeh.mongodb.net/samypo',
+      // 'mongodb://localhost:27017/samypo',
       {
         serverApi: { version: '1', strict: true, deprecationErrors: true },
       },
