@@ -19,9 +19,12 @@ export class StationService {
     limit = 20,
     city = null,
     state = null,
+    lat = null,
+    long = null,
+    products: string[] = [],
   ): Promise<Station[]> {
     const skip = (page - 1) * limit;
-    const query = {};
+    const query: any = {};
 
     if (state) {
       query['state_abbr'] = state;
@@ -29,7 +32,29 @@ export class StationService {
     if (city) {
       query['city'] = city;
     }
-    return this.stationModel.find(query).skip(skip).limit(limit).exec();
+    if (products.length > 0) {
+      query['product'] = { $in: products };
+    }
+
+    if (lat && long) {
+      return this.stationModel
+        .find(query)
+        .where('location')
+        .near({
+          center: {
+            type: 'Point',
+            coordinates: [parseFloat(long), parseFloat(lat)],
+          },
+          distanceField: 'distance',
+          spherical: true,
+        })
+        .sort({ distance: 1 })
+        .skip(skip)
+        .limit(limit)
+        .exec();
+    } else {
+      return this.stationModel.find(query).skip(skip).limit(limit).exec();
+    }
   }
 
   async findLast(

@@ -55,6 +55,12 @@ export class Station {
 
   @Prop({ default: 0 })
   __v: number;
+
+  @Prop({
+    type: { type: String, enum: ['Point'], default: 'Point' },
+    coordinates: { type: [Number], required: true },
+  })
+  location: { type: string; coordinates: number[] };
 }
 
 export const StationSchema = SchemaFactory.createForClass(Station).index(
