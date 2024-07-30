@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { StationService } from './station.service';
 import { Station } from '../schemas/station.schema';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Estabelecimentos')
 @Controller('stations')
@@ -26,20 +26,30 @@ export class StationController {
   }
   */
 
-  @Get(':state?/:city?')
+  @Get('/')
+  @ApiQuery({ name: 'state', required: false, type: String })
+  @ApiQuery({ name: 'city', required: false, type: String })
+  @ApiQuery({ name: 'lat', required: false, type: Number })
+  @ApiQuery({ name: 'long', required: false, type: Number })
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
-    @Param('state') state: string = '',
-    @Param('city') city: string = '',
+    @Query('state') state?: string,
+    @Query('city') city?: string,
+    @Query('lat') lat?: number,
+    @Query('long') long?: number,
+    @Query('products') products: string[] = [],
   ): Promise<Station[]> {
-    const formattedCity = city.toUpperCase();
-    const formattedState = state.toUpperCase();
+    const formattedCity = city?.toUpperCase();
+    const formattedState = state?.toUpperCase();
     return this.stationService.findAll(
       page,
       limit,
       formattedCity,
       formattedState,
+      lat,
+      long,
+      products,
     );
   }
 
